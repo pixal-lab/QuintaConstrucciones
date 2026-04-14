@@ -3,12 +3,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: clamp(1rem, 5vw, 2rem);
   animation: fadeIn 1.2s ease-out;
 }
 
 .logo {
-  height: 180px;
+  height: clamp(120px, 25vw, 180px);
+  max-width: 100%;
+  object-fit: contain;
   will-change: transform;
   margin-bottom: 2rem;
   animation: float 6s ease-in-out infinite;
