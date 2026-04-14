@@ -1,10 +1,11 @@
 import './App.css'
+import logoQC from './assets/logos/LogoQC-sin-fondo-letrasblancas.png'
 
 function App() {
   return (
     <div className="app-container">
       <img 
-        src="/logos/LogoQC-sin-fondo-letrasblancas.png" 
+        src={logoQC} 
         alt="Quinta Construcciones Logo" 
         className="logo" 
       />
