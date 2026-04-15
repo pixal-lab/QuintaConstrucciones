@@ -5,10 +5,10 @@ import SectionTitle from '../ui/SectionTitle';
 
 const TestimonialsSection = ({ id, title, subtitle, testimonials = [] }) => {
   return (
-    <Box id={id} sx={{ py: 10, bgcolor: 'background.paper' }}>
+    <Box id={id} sx={{ py: 10, bgcolor: 'background.default' }}>
       <Container maxWidth="lg">
         <SectionTitle title={title} subtitle={subtitle} />
-        
+
         <Grid container spacing={4} justifyContent="center" alignItems="stretch">
           {testimonials.map((testimonial, index) => (
             <Grid item xs={12} sm={6} md={4} size={{ xs: 12, sm: 6, md: 4 }} key={index} sx={{ display: 'flex', flexDirection: 'column' }}>

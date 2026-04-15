@@ -8,12 +8,18 @@ import ContactSection from './components/sections/ContactSection';
 import WhatsAppButton from './components/specific/WhatsAppButton';
 import logoQC from './assets/logos/LogoQC-sin-fondo-letrasblancas.png';
 import hero from './assets/hero.webp';
-import proj1 from './assets/projects/84879aa4-deac-4c5d-9331-538b5f321aab.jpeg';
-import proj2 from './assets/projects/90896ba6-6b32-4107-bc70-26f2b1077e13.jpeg';
-import proj3 from './assets/projects/IMG_1876.jpeg';
-import proj4 from './assets/projects/IMG_2759.jpeg';
-import proj5 from './assets/projects/c2b43701-c2f4-41ca-9477-04654963d330.jpeg';
-import proj6 from './assets/projects/photo-output.jpeg';
+import proy1a from './assets/projects/proy1-a.jpeg';
+import proy1b from './assets/projects/proy1-b.jpeg';
+import proy2a from './assets/projects/proy2-a.jpeg';
+import proy2b from './assets/projects/proy2-b.jpeg';
+import proy3a from './assets/projects/proy3-a.jpeg';
+import proy3b from './assets/projects/proy3-b.jpeg';
+import proy4a from './assets/projects/proy4-a.jpeg';
+import proy4b from './assets/projects/proy4-b.jpeg';
+import proy5a from './assets/projects/proy5-a.jpg';
+import proy5b from './assets/projects/proy5-b.jpg';
+import proy6 from './assets/projects/proy6.jpeg';
+import proy7 from './assets/projects/proy7.jpeg';
 
 // Dummy Data
 const navbarSections = [
@@ -26,63 +32,84 @@ const navbarSections = [
 
 const servicesData = [
   {
-    title: 'Remodelaciones',
-    description: 'Transformamos tus espacios actuales en lugares modernos y funcionales, adaptados a tus nuevas necesidades.',
-    icon: 'remodelation'
+    title: 'Ampliaciones de Casas en Santiago',
+    description: 'Realizamos ampliaciones de casas en Santiago, desde habitaciones hasta segundos pisos completos. Trabajo estructural seguro, terminaciones de calidad y proyectos llave en mano.',
+    cta: 'Amplía tu hogar con una empresa confiable.',
+    icon: 'expansion'
   },
   {
-    title: 'Construcción',
-    description: 'Construcción de obra nueva desde los cimientos hasta las terminaciones finales, llave en mano.',
-    icon: 'construction'
+    title: 'Instalación de Piso Flotante y SPC',
+    description: 'Servicio de instalación de piso flotante y vinílico SPC en Santiago, con nivelación y terminaciones profesionales. Ideal para renovar tu hogar de forma rápida y duradera.',
+    cta: 'Cotiza con especialistas en pisos.',
+    icon: 'flooring'
   },
   {
-    title: 'Pintura',
-    description: 'Servicio profesional de pintura interior y exterior para darle nueva vida a tu entorno.',
-    icon: 'painting'
+    title: 'Remodelación de Baños en Santiago',
+    description: 'Especialistas en remodelación de baños en Santiago. Cambio de tina a ducha, cerámicas, shower door y terminaciones modernas.',
+    cta: 'Transforma tu baño con resultados profesionales.',
+    icon: 'bathroom'
   },
   {
-    title: 'Instalaciones Sanitarias',
-    description: 'Todo tipo de trabajos de gasfitería, reparaciones e instalación de artefactos con máxima seguridad.',
-    icon: 'plumbing'
+    title: 'Remodelación de Cocinas en Santiago',
+    description: 'Ofrecemos remodelación de cocinas en Santiago, optimizando espacios con diseño moderno y funcional. Muebles, revestimientos y terminaciones de calidad.',
+    cta: 'Renueva tu cocina con expertos.',
+    icon: 'kitchen'
+  },
+  {
+    title: 'Trabajos Eléctricos Certificados SEC',
+    description: 'Realizamos trabajos eléctricos certificados en Santiago, con personal autorizado SEC. Instalaciones, mantención y diagnóstico de fallas.',
+    cta: 'Seguridad y respaldo profesional garantizado.',
+    icon: 'electrical'
   }
 ];
 
 const projectsData = [
   {
-    title: 'Remodelación de Baño',
+    title: 'Proyecto 1',
     category: 'Remodelación',
     description: 'Renovación completa de baño, incluyendo cambio de revestimientos, artefactos y optimización del espacio.',
-    image: proj1
+    imageBefore: proy1a,
+    imageAfter: proy1b
   },
   {
-    title: 'Remodelación de Cocina',
+    title: 'Proyecto 2',
     category: 'Remodelación',
     description: 'Modernización de cocina con nuevo mobiliario, cubiertas de cuarzo y sistema de iluminación eficiente.',
-    image: proj2
+    imageBefore: proy2a,
+    imageAfter: proy2b
   },
   {
-    title: 'Reparación de Baño',
+    title: 'Proyecto 3',
     category: 'Reparación',
     description: 'Reparación de muros, mejoras en terminaciones y aplicación de pintura resistente a la humedad.',
-    image: proj3
+    imageBefore: proy3a,
+    imageAfter: proy3b
   },
   {
-    title: 'Construcción de Baño',
+    title: 'Proyecto 4',
     category: 'Construcción',
     description: 'Construcción completa de baño desde obra gruesa hasta terminaciones, con distribución funcional.',
-    image: proj4
+    imageBefore: proy4a,
+    imageAfter: proy4b
   },
   {
-    title: 'Remodelación de Baño Principal',
+    title: 'Proyecto 5',
     category: 'Remodelación',
     description: 'Actualización de baño principal con instalación de porcelanato, shower door y grifería moderna.',
-    image: proj5
+    imageBefore: proy5a,
+    imageAfter: proy5b
   },
   {
-    title: 'Terminaciones de Baño',
+    title: 'Proyecto 6',
     category: 'Terminaciones',
     description: 'Mejoras en terminaciones interiores, incluyendo revestimientos, pintura antihumedad y detalles finales.',
-    image: proj6
+    image: proy6
+  },
+  {
+    title: 'Proyecto 7',
+    category: 'Remodelación',
+    description: 'Modernización de la fachada o áreas exteriores con nuevos acabados y revestimientos.',
+    image: proy7
   }
 ];
 
