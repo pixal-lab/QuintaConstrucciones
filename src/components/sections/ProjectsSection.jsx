@@ -21,6 +21,8 @@ const ProjectCard = ({ project, showAfter, onUserClick }) => {
   const prevShowAfterRef = useRef(showAfter);
   const TRANSITION_MS = 800;
 
+  const transitionTimerRef = useRef(null); // track to cancel on rapid showAfter changes
+
   useEffect(() => {
     if (!hasBeforeAfter) return;
     if (prevShowAfterRef.current === showAfter) return;
@@ -29,14 +31,17 @@ const ProjectCard = ({ project, showAfter, onUserClick }) => {
     const origin = pendingOriginRef.current;
     pendingOriginRef.current = null;
 
+    // RC-1: cancel any in-flight transition before starting a new one
+    clearTimeout(transitionTimerRef.current);
+
     if (origin || showAfter) {
       // Animated transition (click or auto)
       const x = origin ? origin.x : 0;
       const y = origin ? origin.y : 0;
       isTransitioningRef.current = true;
       setRipple({ x, y, toAfter: showAfter });
-      setTimeout(() => {
-        setDisplayedShowAfter(showAfter); // swap base image only when ripple ends
+      transitionTimerRef.current = setTimeout(() => {
+        setDisplayedShowAfter(showAfter);
         setRipple(null);
         isTransitioningRef.current = false;
       }, TRANSITION_MS);
@@ -46,6 +51,10 @@ const ProjectCard = ({ project, showAfter, onUserClick }) => {
       setRipple(null);
       isTransitioningRef.current = false;
     }
+
+    // RC-2: cleanup cancels the timer if showAfter changes again before it fires,
+    // or if the component unmounts mid-transition.
+    return () => clearTimeout(transitionTimerRef.current);
   }, [showAfter, hasBeforeAfter]);
 
   const handleImageClick = (e) => {
@@ -202,6 +211,18 @@ const ProjectsSection = ({ id, title, subtitle, projects = [] }) => {
   // Infinite carousel: render list twice
   const infiniteProjects = [...projects, ...projects];
 
+  // Preload every project image once on mount so the browser caches them in
+  // memory. Subsequent carousel ticks and ripple animations use the cache —
+  // no extra network requests.
+  useEffect(() => {
+    projects.forEach(p => {
+      [p.imageBefore, p.imageAfter, p.image].filter(Boolean).forEach(src => {
+        const img = new Image();
+        img.src = src;
+      });
+    });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   // ── Helpers ────────────────────────────────────────────────────────────────
 
   // Returns the set of real project indices currently in the scroll viewport
@@ -272,6 +293,7 @@ const ProjectsSection = ({ id, title, subtitle, projects = [] }) => {
     const SETTLE_MS   = 650;  // wait for smooth scroll to finish
 
     let tickTimer = null;
+    let settleTimer = null; // RC-3: track independently from tickTimer
 
     const runTick = () => {
       if (!scrollRef.current) { tickTimer = setTimeout(runTick, NORMAL_MS); return; }
@@ -295,7 +317,9 @@ const ProjectsSection = ({ id, title, subtitle, projects = [] }) => {
 
       el.scrollBy({ left: cardWidth, behavior: 'smooth' });
 
-      setTimeout(() => {
+      // RC-3: store the settle timer so interactionTimerRef can cancel it
+      settleTimer = setTimeout(() => {
+        settleTimer = null;
         const nowVisible = getVisibleRealIndices();
         const prev = prevVisibleRef.current;
         nowVisible.forEach(idx => {
@@ -307,9 +331,11 @@ const ProjectsSection = ({ id, title, subtitle, projects = [] }) => {
       }, SETTLE_MS);
     };
 
-    // Expose an interaction handler: resets timer to 7s (cancels pending tick)
+    // RC-3: also cancel the settle timer so it can't override the 7s tick
     interactionTimerRef.current = () => {
       clearTimeout(tickTimer);
+      clearTimeout(settleTimer);
+      settleTimer = null;
       tickTimer = setTimeout(runTick, INTERACT_MS);
     };
 
@@ -324,6 +350,7 @@ const ProjectsSection = ({ id, title, subtitle, projects = [] }) => {
     return () => {
       clearTimeout(initTimer);
       clearTimeout(tickTimer);
+      clearTimeout(settleTimer); // RC-3: also clean up pending settle on unmount
       autoTimers.current.forEach(t => clearTimeout(t));
     };
   }, [getVisibleRealIndices, scheduleAutoTransition, resetProject, n]);
@@ -365,6 +392,7 @@ const ProjectsSection = ({ id, title, subtitle, projects = [] }) => {
                     flex: { xs: '0 0 100%', md: '0 0 calc(33.333% - 22px)' },
                     minWidth: 0,
                     scrollSnapAlign: 'start',
+                    scrollSnapStop: 'always', // mobile: stop 1 card at a time even on fast swipe
                   }}
                 >
                   <ProjectCard
