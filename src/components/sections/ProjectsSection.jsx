@@ -7,55 +7,62 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 // ─────────────────────────────────────────────────────────────────────────────
 // ProjectCard — purely presentational.
 // showAfter is owned by the parent. Ripple is purely local visual state.
+// isVisible: true when this DOM instance is inside the scroll viewport.
+//            Duplicate (off-screen) instances set this to false so they skip
+//            the ripple animation and silently sync their state, preventing the
+//            double-transition glitch caused by the infinite-carousel duplication.
 // ─────────────────────────────────────────────────────────────────────────────
-const ProjectCard = ({ project, showAfter, onUserClick }) => {
+const ProjectCard = ({ project, showAfter, onUserClick, isVisible }) => {
   const hasBeforeAfter = Boolean(project.imageBefore && project.imageAfter);
 
-  // displayedShowAfter = what is actually rendered as the base image.
-  // It lags behind showAfter by TRANSITION_MS so the ripple completes first.
-  const [displayedShowAfter, setDisplayedShowAfter] = useState(showAfter);
-  const [ripple, setRipple] = useState(null);
   const imageBoxRef = useRef(null);
   const isTransitioningRef = useRef(false);
+  const [origin, setOrigin] = useState({ x: 50, y: 50 });
   const pendingOriginRef = useRef(null);
   const prevShowAfterRef = useRef(showAfter);
-  const TRANSITION_MS = 800;
-
-  const transitionTimerRef = useRef(null); // track to cancel on rapid showAfter changes
+  const transitionTimerRef = useRef(null);
+  
+  // Controls the labels so they switch when the animation finishes
+  const [displayedShowAfter, setDisplayedShowAfter] = useState(showAfter);
 
   useEffect(() => {
     if (!hasBeforeAfter) return;
     if (prevShowAfterRef.current === showAfter) return;
+    
+    // Only update origin from pending click if we are transitioning to 'despues'
+    if (showAfter) {
+      if (pendingOriginRef.current) {
+        setOrigin(pendingOriginRef.current);
+        pendingOriginRef.current = null;
+      } else {
+        setOrigin({ x: 50, y: 50 });
+      }
+    }
+    
     prevShowAfterRef.current = showAfter;
 
-    const origin = pendingOriginRef.current;
-    pendingOriginRef.current = null;
-
-    // RC-1: cancel any in-flight transition before starting a new one
-    clearTimeout(transitionTimerRef.current);
-
-    if (origin || showAfter) {
-      // Animated transition (click or auto)
-      const x = origin ? origin.x : 0;
-      const y = origin ? origin.y : 0;
-      isTransitioningRef.current = true;
-      setRipple({ x, y, toAfter: showAfter });
-      transitionTimerRef.current = setTimeout(() => {
-        setDisplayedShowAfter(showAfter);
-        setRipple(null);
-        isTransitioningRef.current = false;
-      }, TRANSITION_MS);
-    } else {
-      // Instant snap back to "antes" — no animation
-      setDisplayedShowAfter(false);
-      setRipple(null);
+    if (!isVisible) {
       isTransitioningRef.current = false;
+      setDisplayedShowAfter(showAfter);
+      clearTimeout(transitionTimerRef.current);
+      return;
     }
 
-    // RC-2: cleanup cancels the timer if showAfter changes again before it fires,
-    // or if the component unmounts mid-transition.
+    if (showAfter) {
+      isTransitioningRef.current = true;
+      clearTimeout(transitionTimerRef.current);
+      transitionTimerRef.current = setTimeout(() => {
+        isTransitioningRef.current = false;
+        setDisplayedShowAfter(true);
+      }, 800);
+    } else {
+      isTransitioningRef.current = false;
+      setDisplayedShowAfter(false);
+      clearTimeout(transitionTimerRef.current);
+    }
+
     return () => clearTimeout(transitionTimerRef.current);
-  }, [showAfter, hasBeforeAfter]);
+  }, [showAfter, hasBeforeAfter, isVisible]);
 
   const handleImageClick = (e) => {
     if (!hasBeforeAfter || isTransitioningRef.current) return;
@@ -66,11 +73,6 @@ const ProjectCard = ({ project, showAfter, onUserClick }) => {
     };
     onUserClick();
   };
-
-  // The incoming image is always the TARGET (showAfter), not the displayed one
-  const incomingImage = ripple
-    ? (showAfter ? project.imageAfter : project.imageBefore)
-    : null;
 
   return (
     <Card
@@ -95,7 +97,6 @@ const ProjectCard = ({ project, showAfter, onUserClick }) => {
         sx={{ height: '100%', display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}
         disableRipple
       >
-        {/* Image container */}
         <Box
           ref={imageBoxRef}
           onClick={handleImageClick}
@@ -110,35 +111,40 @@ const ProjectCard = ({ project, showAfter, onUserClick }) => {
         >
           {hasBeforeAfter ? (
             <>
-              {/* Base / current image */}
-              <CardMedia
+              {/* Capa Base: Antes (Siempre cargada) */}
+              <Box
                 component="img"
-                image={displayedShowAfter ? project.imageAfter : project.imageBefore}
-                alt={displayedShowAfter ? `${project.title} Después` : `${project.title} Antes`}
+                src={project.imageBefore}
+                alt={`${project.title} Antes`}
                 sx={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
               />
 
-              {/* Radial reveal layer */}
-              {ripple && (
-                <Box
-                  key={`${ripple.x}-${ripple.y}-${String(ripple.toAfter)}`}
-                  sx={{
-                    position: 'absolute',
-                    inset: 0,
-                    backgroundImage: `url(${incomingImage})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    animation: 'rippleReveal 0.8s linear forwards',
-                    '@keyframes rippleReveal': {
-                      '0%':   { clipPath: `circle(0% at ${ripple.x}% ${ripple.y}%)`,   filter: 'blur(18px)' },
-                      '40%':  { clipPath: `circle(60% at ${ripple.x}% ${ripple.y}%)`,  filter: 'blur(10px)' },
-                      '100%': { clipPath: `circle(150% at ${ripple.x}% ${ripple.y}%)`, filter: 'blur(0px)' },
-                    },
-                  }}
-                />
-              )}
+              {/* Capa Superior: Después (Siempre cargada, revelada por CSS nativo) */}
+              <Box
+                component="img"
+                src={project.imageAfter}
+                alt={`${project.title} Después`}
+                sx={{
+                  position: 'absolute',
+                  inset: 0,
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                  '--origin-x': `${origin.x}%`,
+                  '--origin-y': `${origin.y}%`,
+                  // Oculta si showAfter es false. Si es true pero está fuera de cámara, muestra fija sin animar.
+                  clipPath: showAfter ? (isVisible ? undefined : 'circle(150% at var(--origin-x) var(--origin-y))') : 'circle(0% at var(--origin-x) var(--origin-y))',
+                  animation: showAfter && isVisible ? 'rippleReveal 0.8s linear forwards' : 'none',
+                  '@keyframes rippleReveal': {
+                    '0%':   { clipPath: 'circle(0% at var(--origin-x) var(--origin-y))',   filter: 'blur(18px)' },
+                    '40%':  { clipPath: 'circle(60% at var(--origin-x) var(--origin-y))',  filter: 'blur(10px)' },
+                    '100%': { clipPath: 'circle(150% at var(--origin-x) var(--origin-y))', filter: 'blur(0px)' },
+                  },
+                }}
+              />
 
-              {/* State labels */}
+              {/* Etiquetas Gestuales */}
               <Box sx={{ position: 'absolute', top: 12, left: 12, display: 'flex', gap: 0.75, pointerEvents: 'none' }}>
                 <Chip
                   label="Antes"
@@ -172,7 +178,7 @@ const ProjectCard = ({ project, showAfter, onUserClick }) => {
           )}
         </Box>
 
-        {/* Card text content */}
+        {/* Textos */}
         <CardContent sx={{ flexGrow: 1, p: 3, display: 'flex', flexDirection: 'column' }}>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', mb: 1.5, gap: 1, flexWrap: 'wrap' }}>
             <Typography
@@ -204,6 +210,9 @@ const ProjectsSection = ({ id, title, subtitle, projects = [] }) => {
   // One showAfter boolean per real project index
   const [showAfterMap, setShowAfterMap] = useState(() => Array(n).fill(false));
 
+  // DOM-level indices currently inside the scroll viewport (used to gate ripple animations)
+  const [visibleDomIndices, setVisibleDomIndices] = useState(() => new Set());
+
   // Per-project: auto-transition timer and whether the user interacted this round
   const autoTimers = useRef(Array(n).fill(null));
   const userInteracted = useRef(Array(n).fill(false));
@@ -225,135 +234,132 @@ const ProjectsSection = ({ id, title, subtitle, projects = [] }) => {
 
   // ── Helpers ────────────────────────────────────────────────────────────────
 
-  // Returns the set of real project indices currently in the scroll viewport
-  const getVisibleRealIndices = useCallback(() => {
-    if (!scrollRef.current) return new Set();
+  // Returns real-index set AND dom-index set for cards in the scroll viewport
+  const getVisibleIndices = useCallback(() => {
+    if (!scrollRef.current) return { real: new Set(), dom: new Set() };
     const el = scrollRef.current;
     const firstChild = el.children[0];
-    if (!firstChild) return new Set();
+    if (!firstChild) return { real: new Set(), dom: new Set() };
     const cardWidth = firstChild.clientWidth + 32; // card + gap
     const startDom = Math.round(el.scrollLeft / cardWidth);
     const visible = Math.ceil(el.clientWidth / cardWidth);
-    const result = new Set();
+    const real = new Set();
+    const dom  = new Set();
     for (let i = startDom; i < startDom + visible && i < el.children.length; i++) {
-      result.add(i % n);
+      real.add(i % n);
+      dom.add(i);
     }
-    return result;
+    return { real, dom };
   }, [n]);
-
-  // Schedule the antes→después auto-transition for a newly visible project.
-  // Assumes project is already at "antes" (reset by resetProject before scroll).
-  const scheduleAutoTransition = useCallback((realIdx) => {
-    clearTimeout(autoTimers.current[realIdx]);
-    userInteracted.current[realIdx] = false;
-    autoTimers.current[realIdx] = setTimeout(() => {
-      if (!userInteracted.current[realIdx]) {
-        setShowAfterMap(prev => {
-          const next = [...prev];
-          next[realIdx] = true;
-          return next;
-        });
-      }
-    }, 1000);
-  }, []);
 
   // ── Manual click from card ─────────────────────────────────────────────────
   const handleUserClick = useCallback((realIdx) => {
-    clearTimeout(autoTimers.current[realIdx]);
     userInteracted.current[realIdx] = true;
     setShowAfterMap(prev => {
       const next = [...prev];
       next[realIdx] = !prev[realIdx];
       return next;
     });
-    interactionTimerRef.current?.(); // reset auto-advance to 7s
+    interactionTimerRef.current?.(); // pause flow
   }, []);
 
-  // Snap an off-screen project back to "antes" — invisible so no flash.
-  const resetProject = useCallback((realIdx) => {
-    clearTimeout(autoTimers.current[realIdx]);
-    userInteracted.current[realIdx] = false;
-    setShowAfterMap(prev => {
-      if (!prev[realIdx]) return prev;
-      const next = [...prev];
-      next[realIdx] = false;
-      return next;
-    });
-  }, []);
-
-  // Bridge ref: handlers outside the useEffect call this to reset the timer to 7s
+  // Bridge ref: handlers outside the useEffect call this to reset the timers
   const interactionTimerRef = useRef(null);
 
   // ── Carousel auto-scroll + transition scheduling ───────────────────────────
-  const prevVisibleRef = useRef(new Set());
-
   useEffect(() => {
-    const NORMAL_MS   = 5000; // normal carousel interval
-    const INTERACT_MS = 7000; // extended delay after user interaction
-    const SETTLE_MS   = 650;  // wait for smooth scroll to finish
+    const CYCLE_MS = 5000;         // 5s cycle
+    const INTERACT_MS = 5000;      // 5s freeze on interaction
+    const TRANSITION_DELAY = 1000; // 1s before showing "despues"
 
     let tickTimer = null;
-    let settleTimer = null; // RC-3: track independently from tickTimer
+    let transitionTimer = null;
+
+    const performTransition = () => {
+      const { real: nowVisible, dom: nowDom } = getVisibleIndices();
+      setVisibleDomIndices(nowDom);
+
+      setShowAfterMap(prev => {
+        const next = [...prev];
+        for (let i = 0; i < n; i++) {
+          if (nowVisible.has(i)) {
+            // Only auto-transition if user hasn't manually overridden it this round
+            if (!userInteracted.current[i]) {
+              next[i] = true;
+            }
+          } else {
+            next[i] = false;
+            userInteracted.current[i] = false;
+          }
+        }
+        return next;
+      });
+    };
 
     const runTick = () => {
-      if (!scrollRef.current) { tickTimer = setTimeout(runTick, NORMAL_MS); return; }
+      if (!scrollRef.current) {
+        tickTimer = setTimeout(runTick, CYCLE_MS);
+        return;
+      }
       const el = scrollRef.current;
       const firstChild = el.children[0];
-      if (!firstChild) { tickTimer = setTimeout(runTick, NORMAL_MS); return; }
+      if (!firstChild) {
+        tickTimer = setTimeout(runTick, CYCLE_MS);
+        return;
+      }
 
       const cardWidth = firstChild.clientWidth + 32;
       const halfWidth = el.scrollWidth / 2;
 
-      // Reset all off-screen projects BEFORE scrolling (invisible → no flash)
-      const currentVisible = getVisibleRealIndices();
-      for (let i = 0; i < n; i++) {
-        if (!currentVisible.has(i)) resetProject(i);
-      }
+      // Ensure off-screen elements reset to "antes" BEFORE scrolling visually
+      const { real: currentVisible } = getVisibleIndices();
+      setShowAfterMap(prev => {
+        const next = [...prev];
+        let changed = false;
+        for (let i = 0; i < n; i++) {
+          if (!currentVisible.has(i)) {
+            if (next[i] !== false) changed = true;
+            next[i] = false;
+            userInteracted.current[i] = false;
+          }
+        }
+        return changed ? next : prev;
+      });
 
-      // Seamless infinite loop
+      // Seamless infinite loop backwards adjustment
       if (el.scrollLeft >= halfWidth) {
-        el.scrollLeft = el.scrollLeft - halfWidth;
+        el.scrollLeft -= halfWidth;
       }
 
+      // Scroll to the next project
       el.scrollBy({ left: cardWidth, behavior: 'smooth' });
 
-      // RC-3: store the settle timer so interactionTimerRef can cancel it
-      settleTimer = setTimeout(() => {
-        settleTimer = null;
-        const nowVisible = getVisibleRealIndices();
-        const prev = prevVisibleRef.current;
-        nowVisible.forEach(idx => {
-          if (!prev.has(idx)) scheduleAutoTransition(idx);
-        });
-        prevVisibleRef.current = nowVisible;
-        // Schedule next tick at normal interval
-        tickTimer = setTimeout(runTick, NORMAL_MS);
-      }, SETTLE_MS);
+      // After 1 second, transition visible cards to "despues"
+      transitionTimer = setTimeout(performTransition, TRANSITION_DELAY);
+
+      // Schedule next tick in 5 seconds
+      tickTimer = setTimeout(runTick, CYCLE_MS);
     };
 
-    // RC-3: also cancel the settle timer so it can't override the 7s tick
     interactionTimerRef.current = () => {
       clearTimeout(tickTimer);
-      clearTimeout(settleTimer);
-      settleTimer = null;
+      clearTimeout(transitionTimer);
+      
+      // Enforce transition logic for newly visible or interacted items
+      transitionTimer = setTimeout(performTransition, TRANSITION_DELAY);
+      // Freeze flow by delaying the next auto-tick to 5s from now
       tickTimer = setTimeout(runTick, INTERACT_MS);
     };
 
-    // Kick off: schedule initial visible transitions, then start loop
-    const initTimer = setTimeout(() => {
-      const initial = getVisibleRealIndices();
-      prevVisibleRef.current = initial;
-      initial.forEach(idx => scheduleAutoTransition(idx));
-      tickTimer = setTimeout(runTick, NORMAL_MS);
-    }, 300);
+    // Kick off: start with transition timer for initially visible elements
+    transitionTimer = setTimeout(performTransition, TRANSITION_DELAY);
+    tickTimer = setTimeout(runTick, CYCLE_MS);
 
     return () => {
-      clearTimeout(initTimer);
       clearTimeout(tickTimer);
-      clearTimeout(settleTimer); // RC-3: also clean up pending settle on unmount
-      autoTimers.current.forEach(t => clearTimeout(t));
+      clearTimeout(transitionTimer);
     };
-  }, [getVisibleRealIndices, scheduleAutoTransition, resetProject, n]);
+  }, [getVisibleIndices, n]);
 
   // ── Manual arrow navigation ────────────────────────────────────────────────
   const scroll = (direction) => {
@@ -373,6 +379,7 @@ const ProjectsSection = ({ id, title, subtitle, projects = [] }) => {
         <Box sx={{ position: 'relative', mt: 4 }}>
           <Box
             ref={scrollRef}
+            onPointerDown={() => interactionTimerRef.current?.()}
             sx={{
               display: 'flex',
               overflowX: 'auto',
@@ -399,6 +406,7 @@ const ProjectsSection = ({ id, title, subtitle, projects = [] }) => {
                     project={project}
                     showAfter={showAfterMap[realIdx]}
                     onUserClick={() => handleUserClick(realIdx)}
+                    isVisible={visibleDomIndices.has(index)}
                   />
                 </Box>
               );

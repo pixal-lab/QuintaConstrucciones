@@ -8,7 +8,7 @@ import TestimonialsSection from './components/sections/TestimonialsSection';
 import ContactSection from './components/sections/ContactSection';
 import WhatsAppButton from './components/specific/WhatsAppButton';
 import logoQC from './assets/logos/LogoQC-sin-fondo-letrasblancas.png';
-import hero from './assets/hero.webp';
+import hero from './assets/hero2.png';
 import proy1a from './assets/projects/proy1-a.jpeg';
 import proy1b from './assets/projects/proy1-b.jpeg';
 import proy2a from './assets/projects/proy2-a.jpeg';
@@ -142,15 +142,9 @@ function App() {
 
       <HeroSection
         id="hero"
-        title="Remodelamos y construimos tu proyecto con terminaciones profesionales"
-        subtitle={
-          <>
-            Especialistas en remodelación de baños, cocinas, ampliaciones y pintura.<br />
-            Trabajamos en todo Santiago con garantía y cumplimiento real.{' '}
-            Empresa atendida por su propio dueño{' '}
-            <HandshakeIcon sx={{ fontSize: '1.1em', verticalAlign: 'middle', mb: '2px' }} />
-          </>
-        }
+        title="Remodelamos y construimos tu proyecto"
+        subtitle="Baños, cocinas, ampliaciones y más en Santiago.
+        Trabajo garantizado."
         ctaText="Solicitar Cotización"
         ctaLink={wspUrl}
         backgroundUrl={hero}
