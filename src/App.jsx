@@ -1,4 +1,5 @@
 import React from 'react';
+import HandshakeIcon from '@mui/icons-material/Handshake';
 import Layout from './components/layout/Layout';
 import HeroSection from './components/sections/HeroSection';
 import ServicesSection from './components/sections/ServicesSection';
@@ -141,8 +142,15 @@ function App() {
 
       <HeroSection
         id="hero"
-        title="Construimos tus ideas"
-        subtitle="Especialistas en remodelación, construcción y mantención. Confiabilidad y excelencia en cada proyecto."
+        title="Remodelamos y construimos tu proyecto con terminaciones profesionales"
+        subtitle={
+          <>
+            Especialistas en remodelación de baños, cocinas, ampliaciones y pintura.<br />
+            Trabajamos en todo Santiago con garantía y cumplimiento real.{' '}
+            Empresa atendida por su propio dueño{' '}
+            <HandshakeIcon sx={{ fontSize: '1.1em', verticalAlign: 'middle', mb: '2px' }} />
+          </>
+        }
         ctaText="Solicitar Cotización"
         ctaLink={wspUrl}
         backgroundUrl={hero}

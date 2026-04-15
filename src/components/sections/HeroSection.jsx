@@ -18,27 +18,27 @@ const HeroSection = ({ id, backgroundUrl, title, subtitle, ctaText, ctaLink }) =
     >
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 2 }}>
         <Box sx={{ maxWidth: '800px' }}>
-          <Typography 
-            variant="h2" 
-            component="h1" 
-            sx={{ 
-              fontWeight: 800, 
-              mb: 3, 
+          <Typography
+            variant="h2"
+            component="h1"
+            sx={{
+              fontWeight: 800,
+              mb: 3,
               color: 'white',
-              fontSize: { xs: '3rem', md: '4rem' }
+              fontSize: { xs: '3rem', md: '3.7rem' }
             }}
           >
             {title}
           </Typography>
-          <Typography 
-            variant="h5" 
+          <Typography
+            variant="h5"
             sx={{ mb: 4, color: 'rgba(255,255,255,0.8)', fontWeight: 300, lineHeight: 1.6 }}
           >
             {subtitle}
           </Typography>
-          <Button 
-            variant="contained" 
-            color="primary" 
+          <Button
+            variant="contained"
+            color="primary"
             size="large"
             href={ctaLink}
             target={ctaLink?.startsWith('http') ? '_blank' : undefined}
