@@ -65,50 +65,50 @@ const servicesData = [
 
 const projectsData = [
   {
-    title: 'Proyecto 1',
-    category: 'Remodelación',
-    description: 'Renovación completa de baño, incluyendo cambio de revestimientos, artefactos y optimización del espacio.',
+    title: 'Proyecto Talagante',
+    category: 'Baño',
+    description: 'Fabricación integral de baño.',
     imageBefore: proy1a,
     imageAfter: proy1b
   },
   {
-    title: 'Proyecto 2',
-    category: 'Remodelación',
-    description: 'Modernización de cocina con nuevo mobiliario, cubiertas de cuarzo y sistema de iluminación eficiente.',
+    title: 'Proyecto Recoleta',
+    category: 'Baño',
+    description: 'Remodelación completa de baño con shower door de corredera.',
     imageBefore: proy2a,
     imageAfter: proy2b
   },
   {
-    title: 'Proyecto 3',
-    category: 'Reparación',
-    description: 'Reparación de muros, mejoras en terminaciones y aplicación de pintura resistente a la humedad.',
+    title: 'Proyecto Ángel Cruchaga',
+    category: 'Baño',
+    description: 'Remodelación completa de baño en un espacio adaptado desde 0.',
     imageBefore: proy3a,
     imageAfter: proy3b
   },
   {
-    title: 'Proyecto 4',
-    category: 'Construcción',
-    description: 'Construcción completa de baño desde obra gruesa hasta terminaciones, con distribución funcional.',
+    title: 'Proyecto La Florida',
+    category: 'Baño',
+    description: 'Remodelación de ducha con receptáculo de fibra de vidrio e instalación de shower door de corredera.',
     imageBefore: proy4a,
     imageAfter: proy4b
   },
   {
-    title: 'Proyecto 5',
-    category: 'Remodelación',
-    description: 'Actualización de baño principal con instalación de porcelanato, shower door y grifería moderna.',
+    title: 'Proyecto La Reina',
+    category: 'Cocina',
+    description: 'Remodelación integral de cocina con muebles a medida.',
     imageBefore: proy5a,
     imageAfter: proy5b
   },
   {
-    title: 'Proyecto 6',
-    category: 'Terminaciones',
-    description: 'Mejoras en terminaciones interiores, incluyendo revestimientos, pintura antihumedad y detalles finales.',
+    title: 'Proyecto Peñailillo',
+    category: 'Cocina',
+    description: 'Remodelación integral de cocina.',
     image: proy6
   },
   {
-    title: 'Proyecto 7',
-    category: 'Remodelación',
-    description: 'Modernización de la fachada o áreas exteriores con nuevos acabados y revestimientos.',
+    title: 'Proyecto Los Fresnos',
+    category: 'Baño',
+    description: 'Remodelación de ducha con fabricación de receptáculo en obra e instalación de shower door de corredera con vidrio empavonado.',
     image: proy7
   }
 ];
