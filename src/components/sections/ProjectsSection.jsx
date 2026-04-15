@@ -245,6 +245,7 @@ const ProjectsSection = ({ id, title, subtitle, projects = [] }) => {
       next[realIdx] = !prev[realIdx];
       return next;
     });
+    interactionTimerRef.current?.(); // reset auto-advance to 7s
   }, []);
 
   // Snap an off-screen project back to "antes" — invisible so no flash.
@@ -259,43 +260,41 @@ const ProjectsSection = ({ id, title, subtitle, projects = [] }) => {
     });
   }, []);
 
+  // Bridge ref: handlers outside the useEffect call this to reset the timer to 7s
+  const interactionTimerRef = useRef(null);
+
   // ── Carousel auto-scroll + transition scheduling ───────────────────────────
   const prevVisibleRef = useRef(new Set());
 
   useEffect(() => {
-    const initTimer = setTimeout(() => {
-      const initial = getVisibleRealIndices();
-      prevVisibleRef.current = initial;
-      initial.forEach(idx => scheduleAutoTransition(idx));
-    }, 300);
+    const NORMAL_MS   = 5000; // normal carousel interval
+    const INTERACT_MS = 7000; // extended delay after user interaction
+    const SETTLE_MS   = 650;  // wait for smooth scroll to finish
 
-    const CAROUSEL_MS = 5000;
-    const SETTLE_MS = 650;
+    let tickTimer = null;
 
-    const interval = setInterval(() => {
-      if (!scrollRef.current) return;
+    const runTick = () => {
+      if (!scrollRef.current) { tickTimer = setTimeout(runTick, NORMAL_MS); return; }
       const el = scrollRef.current;
       const firstChild = el.children[0];
-      if (!firstChild) return;
+      if (!firstChild) { tickTimer = setTimeout(runTick, NORMAL_MS); return; }
+
       const cardWidth = firstChild.clientWidth + 32;
       const halfWidth = el.scrollWidth / 2;
 
-      // KEY FIX: reset all off-screen projects BEFORE scrolling.
-      // They're invisible so there's no flash. When they come back into view
-      // in a future tick, they'll already be at "antes".
+      // Reset all off-screen projects BEFORE scrolling (invisible → no flash)
       const currentVisible = getVisibleRealIndices();
       for (let i = 0; i < n; i++) {
         if (!currentVisible.has(i)) resetProject(i);
       }
 
-      // Seamless infinite loop: jump back to first copy if in second
+      // Seamless infinite loop
       if (el.scrollLeft >= halfWidth) {
         el.scrollLeft = el.scrollLeft - halfWidth;
       }
 
       el.scrollBy({ left: cardWidth, behavior: 'smooth' });
 
-      // After scroll settles, schedule transitions for newly visible projects
       setTimeout(() => {
         const nowVisible = getVisibleRealIndices();
         const prev = prevVisibleRef.current;
@@ -303,12 +302,28 @@ const ProjectsSection = ({ id, title, subtitle, projects = [] }) => {
           if (!prev.has(idx)) scheduleAutoTransition(idx);
         });
         prevVisibleRef.current = nowVisible;
+        // Schedule next tick at normal interval
+        tickTimer = setTimeout(runTick, NORMAL_MS);
       }, SETTLE_MS);
-    }, CAROUSEL_MS);
+    };
+
+    // Expose an interaction handler: resets timer to 7s (cancels pending tick)
+    interactionTimerRef.current = () => {
+      clearTimeout(tickTimer);
+      tickTimer = setTimeout(runTick, INTERACT_MS);
+    };
+
+    // Kick off: schedule initial visible transitions, then start loop
+    const initTimer = setTimeout(() => {
+      const initial = getVisibleRealIndices();
+      prevVisibleRef.current = initial;
+      initial.forEach(idx => scheduleAutoTransition(idx));
+      tickTimer = setTimeout(runTick, NORMAL_MS);
+    }, 300);
 
     return () => {
       clearTimeout(initTimer);
-      clearInterval(interval);
+      clearTimeout(tickTimer);
       autoTimers.current.forEach(t => clearTimeout(t));
     };
   }, [getVisibleRealIndices, scheduleAutoTransition, resetProject, n]);
@@ -319,6 +334,7 @@ const ProjectsSection = ({ id, title, subtitle, projects = [] }) => {
     const el = scrollRef.current;
     const cardWidth = el.children[0] ? el.children[0].clientWidth + 32 : 380;
     el.scrollBy({ left: direction === 'left' ? -cardWidth : cardWidth, behavior: 'smooth' });
+    interactionTimerRef.current?.(); // reset auto-advance to 7s
   };
 
   // ── Render ─────────────────────────────────────────────────────────────────
