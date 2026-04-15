@@ -8,7 +8,7 @@ import TestimonialsSection from './components/sections/TestimonialsSection';
 import ContactSection from './components/sections/ContactSection';
 import WhatsAppButton from './components/specific/WhatsAppButton';
 import logoQC from './assets/logos/LogoQC-sin-fondo-letrasblancas.png';
-import hero from './assets/hero2.png';
+import hero from './assets/hero3.webp';
 import proy1a from './assets/projects/proy1-a.jpeg';
 import proy1b from './assets/projects/proy1-b.jpeg';
 import proy2a from './assets/projects/proy2-a.jpeg';
@@ -116,19 +116,20 @@ const projectsData = [
 
 const testimonialsData = [
   {
-    name: 'Elias Quintanilla',
-    role: 'Dueño de Negocio',
-    content: 'Excelente servicio, muy responsables con los plazos de entrega y las terminaciones de mi cocina quedaron preciosas. 100% recomendados.'
+    name: 'Jorge Aguilar',
+    content: 'No tengo palabras, sólo de agradecimiento y admiración por el trabajo que hacen. En lo personal me declaro más que conforme con los trabajos echos en mi casa, así da gusto ser atendido como cliente, cuando la gente es educada, respetuosos y trabajadores.'
   },
   {
-    name: 'Iglesia La Reina',
-    role: 'Administrador de Comunidad',
-    content: 'La asesoría profesional que brindaron desde el comienzo ayuda mucho a tomar buenas decisiones en la obra.'
+    name: 'Aracely Núñez',
+    content: '100/10 excelente trabajo. Muy recomendado'
   },
   {
-    name: 'Familia Aguilar',
-    role: 'Clientes Residenciales',
-    content: 'Transformaron completamente nuestro patio, construyendo el quincho que siempre soñamos. Destaco la limpieza y el orden durante los trabajos.'
+    name: 'Carlos Aguilar',
+    content: 'Los mejores son duda'
+  },
+  {
+    name: 'Isabel Margarita Melgarejo Bastias',
+    content: 'Los mejores 💯 recomendado'
   }
 ];
 

@@ -1,18 +1,39 @@
 import React from 'react';
-import { Box, Container, Grid, Card, CardContent, Typography, Avatar } from '@mui/material';
+import { Box, Container, Card, CardContent, Typography, Avatar } from '@mui/material';
+import { keyframes } from '@mui/system';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import SectionTitle from '../ui/SectionTitle';
 
+const slide = keyframes`
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+`;
+
 const TestimonialsSection = ({ id, title, subtitle, testimonials = [] }) => {
+  // Repetimos los testimonios suficientes veces para que 1 "mitad" sea más ancha que cualquier pantalla (ej. pantallas 4K)
+  const baseSet = [...testimonials, ...testimonials, ...testimonials];
+  const duplicatedTestimonials = [...baseSet, ...baseSet];
+
   return (
-    <Box id={id} sx={{ py: 10, bgcolor: 'background.default' }}>
+    <Box id={id} sx={{ py: 10, bgcolor: 'background.default', overflow: 'hidden' }}>
       <Container maxWidth="lg">
         <SectionTitle title={title} subtitle={subtitle} />
-
-        <Grid container spacing={4} justifyContent="center" alignItems="stretch">
-          {testimonials.map((testimonial, index) => (
-            <Grid item xs={12} sm={6} md={4} size={{ xs: 12, sm: 6, md: 4 }} key={index} sx={{ display: 'flex', flexDirection: 'column' }}>
-              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'visible', mt: 4 }}>
+      </Container>
+        
+      <Box sx={{ mt: 4, position: 'relative', width: '100%', overflow: 'hidden' }}>
+        <Box
+          sx={{
+            display: 'flex',
+            width: 'max-content',
+            animation: `${slide} 120s linear infinite`,
+            '&:hover': {
+              animationPlayState: 'paused'
+            }
+          }}
+        >
+          {duplicatedTestimonials.map((testimonial, index) => (
+            <Box key={index} sx={{ width: { xs: 300, sm: 350, md: 400 }, mx: 2, flexShrink: 0, pt: 3, pb: 2 }}>
+              <Card sx={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'visible', borderRadius: 2, boxShadow: 3 }}>
                 <Box
                   sx={{
                     position: 'absolute',
@@ -24,7 +45,8 @@ const TestimonialsSection = ({ id, title, subtitle, testimonials = [] }) => {
                     height: 48,
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    boxShadow: 2
                   }}
                 >
                   <FormatQuoteIcon sx={{ color: 'white' }} />
@@ -39,17 +61,14 @@ const TestimonialsSection = ({ id, title, subtitle, testimonials = [] }) => {
                       <Typography variant="subtitle2" fontWeight="bold">
                         {testimonial.name}
                       </Typography>
-                      <Typography variant="caption" color="text.secondary">
-                        {testimonial.role}
-                      </Typography>
                     </Box>
                   </Box>
                 </CardContent>
               </Card>
-            </Grid>
+            </Box>
           ))}
-        </Grid>
-      </Container>
+        </Box>
+      </Box>
     </Box>
   );
 };

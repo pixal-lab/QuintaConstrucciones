@@ -1,53 +1,88 @@
 import React from 'react';
-import { Box, Container, Grid, Typography, IconButton, Link } from '@mui/material';
+import { Box, Container, Grid, Typography, IconButton, Stack } from '@mui/material';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
 import BuildIcon from '@mui/icons-material/Build'; // Placeholder for logo
+import PhoneIcon from '@mui/icons-material/Phone';
+import EmailIcon from '@mui/icons-material/Email';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 const Footer = () => {
   return (
-    <Box sx={{ bgcolor: '#2B2C2C', color: '#FFFFFF', py: 6, mt: 'auto' }}>
+    <Box sx={{ bgcolor: '#1A1B1B', color: '#FFFFFF', py: { xs: 8, md: 12 }, mt: 'auto', borderTop: '4px solid #F39532' }}>
       <Container maxWidth="lg">
-        <Grid container spacing={4}>
-          <Grid item xs={12} sm={4}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <BuildIcon sx={{ mr: 1, color: 'primary.main' }} />
-              <Typography variant="h6" sx={{ color: '#FFFFFF' }} fontWeight="bold">
+        <Grid container spacing={{ xs: 6, md: 8 }}>
+          <Grid item xs={12} md={4}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+              <BuildIcon sx={{ mr: 1.5, color: 'primary.main', fontSize: 32 }} />
+              <Typography variant="h5" sx={{ color: '#FFFFFF', letterSpacing: 0.5 }} fontWeight="700">
                 Quinta Construcciones
               </Typography>
             </Box>
-            <Typography variant="body2" paragraph sx={{ color: '#FFFFFF' }}>
+            <Typography variant="body1" sx={{ color: 'rgba(255,255,255,0.7)', lineHeight: 1.8, pr: { md: 4 } }}>
               Construimos y remodelamos tus ideas con los más altos estándares de calidad y profesionalismo.
             </Typography>
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <Typography variant="h6" sx={{ color: '#FFFFFF' }} gutterBottom>
+
+          <Grid item xs={12} sm={6} md={4}>
+            <Typography variant="h6" sx={{ color: '#FFFFFF', mb: 3, fontWeight: 'bold' }}>
               Contacto
             </Typography>
-            <Typography variant="body2" sx={{ color: '#FFFFFF' }}>Teléfono: +56 9 8684 9412</Typography>
-            <Typography variant="body2" sx={{ color: '#FFFFFF' }}>Email: correo@quintaconstrucciones.cl</Typography>
-            <Typography variant="body2" sx={{ color: '#FFFFFF' }}>Santiago, Chile</Typography>
+            <Stack spacing={2}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+                <PhoneIcon sx={{ color: 'primary.main', mr: 2, mt: 0.5, fontSize: 20 }} />
+                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem' }}>+56 9 8684 9412</Typography>
+              </Box>
+              {/* <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+                <EmailIcon sx={{ color: 'primary.main', mr: 2, mt: 0.5, fontSize: 20 }} />
+                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem' }}>correo@quintaconstrucciones.cl</Typography>
+              </Box> */}
+              <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+                <LocationOnIcon sx={{ color: 'primary.main', mr: 2, mt: 0.5, fontSize: 20 }} />
+                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem' }}>Santiago, Chile</Typography>
+              </Box>
+            </Stack>
           </Grid>
-          <Grid item xs={12} sm={4}>
-            <Typography variant="h6" sx={{ color: '#FFFFFF' }} gutterBottom>
+
+          <Grid item xs={12} sm={6} md={4}>
+            <Typography variant="h6" sx={{ color: '#FFFFFF', mb: 3, fontWeight: 'bold' }}>
               Síguenos
             </Typography>
-            <Box>
-              <IconButton component="a" href="https://www.facebook.com/Quintaconstrucciones" color="inherit">
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <IconButton
+                component="a"
+                href="https://www.facebook.com/Quintaconstrucciones"
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  color: '#FFFFFF',
+                  bgcolor: 'rgba(255,255,255,0.1)',
+                  '&:hover': { bgcolor: 'primary.main', transform: 'translateY(-3px)' },
+                  transition: 'all 0.3s ease'
+                }}
+              >
                 <FacebookIcon />
               </IconButton>
-              <IconButton component="a" href="https://www.instagram.com/quintaconstrucciones" color="inherit">
+              <IconButton
+                component="a"
+                href="https://www.instagram.com/quintaconstrucciones"
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  color: '#FFFFFF',
+                  bgcolor: 'rgba(255,255,255,0.1)',
+                  '&:hover': { bgcolor: 'primary.main', transform: 'translateY(-3px)' },
+                  transition: 'all 0.3s ease'
+                }}
+              >
                 <InstagramIcon />
               </IconButton>
-              {/* <IconButton component="a" href="#" color="inherit">
-                <LinkedInIcon />
-              </IconButton> */}
             </Box>
           </Grid>
         </Grid>
-        <Box sx={{ mt: 5, borderTop: 1, borderColor: 'rgba(255, 255, 255, 0.2)', pt: 3, textAlign: 'center' }}>
-          <Typography variant="body2" sx={{ color: '#FFFFFF' }}>
+
+        <Box sx={{ mt: { xs: 6, md: 10 }, borderTop: 1, borderColor: 'rgba(255, 255, 255, 0.1)', pt: 4, display: 'flex', flexDirection: { xs: 'column', md: 'row' }, justifyContent: 'space-between', alignItems: 'center', gap: 2 }}>
+          <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.5)' }}>
             {'© '}
             {new Date().getFullYear()} Quinta Construcciones. Todos los derechos reservados.
           </Typography>
