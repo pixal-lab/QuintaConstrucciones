@@ -31,11 +31,25 @@ const Footer = () => {
             <Stack spacing={2}>
               <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
                 <PhoneIcon sx={{ color: 'primary.main', mr: 2, mt: 0.5, fontSize: 20 }} />
-                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem' }}>+56 9 8684 9412</Typography>
+                <Typography
+                  component="a"
+                  href="tel:+56986849412"
+                  variant="body2"
+                  sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem', textDecoration: 'none', '&:hover': { color: 'primary.main' } }}
+                >
+                  +56 9 8684 9412
+                </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
                 <EmailIcon sx={{ color: 'primary.main', mr: 2, mt: 0.5, fontSize: 20 }} />
-                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem' }}>contacto@quintaconstrucciones.cl</Typography>
+                <Typography
+                  component="a"
+                  href="mailto:contacto@quintaconstrucciones.cl"
+                  variant="body2"
+                  sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem', textDecoration: 'none', '&:hover': { color: 'primary.main' } }}
+                >
+                  contacto@quintaconstrucciones.cl
+                </Typography>
               </Box>
               <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
                 <LocationOnIcon sx={{ color: 'primary.main', mr: 2, mt: 0.5, fontSize: 20 }} />
