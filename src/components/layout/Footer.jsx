@@ -33,10 +33,10 @@ const Footer = () => {
                 <PhoneIcon sx={{ color: 'primary.main', mr: 2, mt: 0.5, fontSize: 20 }} />
                 <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem' }}>+56 9 8684 9412</Typography>
               </Box>
-              {/* <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+              <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
                 <EmailIcon sx={{ color: 'primary.main', mr: 2, mt: 0.5, fontSize: 20 }} />
-                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem' }}>correo@quintaconstrucciones.cl</Typography>
-              </Box> */}
+                <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem' }}>contacto@quintaconstrucciones.cl</Typography>
+              </Box>
               <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
                 <LocationOnIcon sx={{ color: 'primary.main', mr: 2, mt: 0.5, fontSize: 20 }} />
                 <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem' }}>Santiago, Chile</Typography>

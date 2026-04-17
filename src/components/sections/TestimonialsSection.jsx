@@ -19,16 +19,13 @@ const TestimonialsSection = ({ id, title, subtitle, testimonials = [] }) => {
       <Container maxWidth="lg">
         <SectionTitle title={title} subtitle={subtitle} />
       </Container>
-        
+
       <Box sx={{ mt: 4, position: 'relative', width: '100%', overflow: 'hidden' }}>
         <Box
           sx={{
             display: 'flex',
             width: 'max-content',
-            animation: `${slide} 120s linear infinite`,
-            '&:hover': {
-              animationPlayState: 'paused'
-            }
+            animation: `${slide} 120s linear infinite`
           }}
         >
           {duplicatedTestimonials.map((testimonial, index) => (
