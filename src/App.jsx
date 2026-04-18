@@ -61,6 +61,12 @@ const servicesData = [
     description: 'Realizamos trabajos eléctricos certificados en Santiago, con personal autorizado SEC. Instalaciones, mantención y diagnóstico de fallas.',
     cta: 'Seguridad y respaldo profesional garantizado.',
     icon: 'electrical'
+  },
+  {
+    title: 'Visitas Técnicas en Terreno',
+    description: 'Para asegurar un presupuesto preciso, realizamos visitas técnicas en terreno para evaluar su proyecto. El valor de la visita se descuenta completamente si decide trabajar con nosotros.',
+    cta: 'Agenda tu visita técnica sin riesgo.',
+    icon: 'engineering'
   }
 ];
 

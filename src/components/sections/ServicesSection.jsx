@@ -8,6 +8,7 @@ import BathroomIcon from '@mui/icons-material/Bathroom';
 import KitchenIcon from '@mui/icons-material/Kitchen';
 import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices';
 import ConstructionIcon from '@mui/icons-material/Construction';
+import Engineering from '@mui/icons-material/Engineering';
 
 // Mapeo de string → icono MUI.
 // Para agregar un nuevo servicio basta con añadir una entrada aquí.
@@ -17,6 +18,7 @@ const iconMapping = {
   bathroom: <BathroomIcon color="primary" fontSize="large" />,
   kitchen: <KitchenIcon color="primary" fontSize="large" />,
   electrical: <ElectricalServicesIcon color="primary" fontSize="large" />,
+  engineering: <Engineering color="primary" fontSize="large" />,
   // Legacy
   construction: <ConstructionIcon color="primary" fontSize="large" />,
   remodelation: <HomeWorkIcon color="primary" fontSize="large" />,
